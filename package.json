@@ -1,0 +1,31 @@
+{
+  "name": "use-webpack-chain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf dist && webpack --config webpack.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "css-loader": "^4.2.2",
+    "eslint": "^7.7.0",
+    "html-webpack-plugin": "^4.3.0",
+    "less-loader": "^7.0.0",
+    "mini-css-extract-plugin": "^0.10.0",
+    "webpack": "^4.44.1",
+    "webpack-chain": "^6.5.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.1.0",
+    "eslint-loader": "^4.0.2",
+    "less": "^3.12.2"
+  }
+}
