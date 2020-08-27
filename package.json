@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -rf dist && webpack --config webpack.config.js"
+    "rm": "rm -rf dist",
+    "dev": "npm run rm && cross-env NODE_ENV=development node build/dev.js",
+    "build": "npm run rm && cross-env NODE_ENV=production node build/build.js"
   },
   "keywords": [],
   "author": "",
@@ -19,12 +21,11 @@
     "mini-css-extract-plugin": "^0.10.0",
     "webpack": "^4.44.1",
     "webpack-chain": "^6.5.1",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@babel/core": "^7.11.4",
-    "@babel/preset-env": "^7.11.0",
-    "babel-loader": "^8.1.0",
+    "cross-env": "^7.0.2",
     "eslint-loader": "^4.0.2",
     "less": "^3.12.2"
   }
