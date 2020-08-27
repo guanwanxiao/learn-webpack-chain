@@ -4,7 +4,7 @@ const config = require('./base')
 const WebpackDevServer = require('webpack-dev-server')
 const webpack = require('webpack')
 const port = 8090
-const publicPath = '/common/'
+const publicPath = '/'
 config.devServer
   .quiet(true)
   .hot(true)
@@ -17,14 +17,11 @@ const compiler = webpack(config.toConfig())
 // 拿到 devServer 参数
 const chainDevServer = compiler.options.devServer
 const server = new WebpackDevServer(compiler,Object.assign(chainDevServer,{}))
-
 server.listen(port)
 
-new Promise(() => {
-  compiler.hooks.done.tap('dev', stats => {
-    const empty = '    '
-    const common = `App running at:
-    - Local: http://127.0.0.1:${port}${publicPath}\n`
-    console.log(chalk.cyan('\n' + empty + common))
-  })
+compiler.hooks.done.tap('dev', stats => {
+  const empty = '    '
+  const common = `App running at:
+  - Local: http://127.0.0.1:${port}${publicPath}\n`
+  console.log(chalk.cyan('\n' + empty + common))
 })
