@@ -28,18 +28,32 @@ config.module
         ]
       });
 config.module
+    // 针对使用多个 loaders 起一个总的名字
     .rule('extract-css-loader')
-      .test(/\.(le|c)ss$/)
-      .use('extract-css-loader')
-      .loader(require('mini-css-extract-plugin').loader)
-      .options({
-        publicPath: './'
-      })
-      .end()
-    .rule('css-loader')
+      .test(/\.(le|c|postc)ss$/)
+    // .rule('css-loader')
       .use('css-loader')
       .loader('css-loader')
-      .options({});
+      .options({})
+      .end()
+    // .rule('postcss-loader')
+      // .test(/\.postcss$/)
+      // .use('postcss-loader')
+      // .loader('postcss-loader')
+      // .options({           // 如果没有options这个选项将会报错 No PostCSS Config found
+      //         plugins: (loader) => [
+      //             require('postcss-import')({root: loader.resourcePath}),
+      //             require('autoprefixer')(), //CSS浏览器兼容
+      //             require('cssnano')()  //压缩css
+      //         ]
+      //     }
+      // )
+      // .end()
+    // .rule('less')
+      // .test(/\.less$/)
+      // .use('less-loader')
+      // .loader('less-loader')
+      // .end()
 
 
 config.plugin('html').use(htmlPlugin,[{}])
