@@ -31,29 +31,42 @@ config.module
     // 针对使用多个 loaders 起一个总的名字
     .rule('extract-css-loader')
       .test(/\.(le|c|postc)ss$/)
-    // .rule('css-loader')
+      .use('extract-css-loader')
+        .loader(require('mini-css-extract-plugin').loader)
+        .options({
+          publicPath: './'
+        })
+        .end()
       .use('css-loader')
-      .loader('css-loader')
-      .options({})
-      .end()
-    // .rule('postcss-loader')
-      // .test(/\.postcss$/)
-      // .use('postcss-loader')
-      // .loader('postcss-loader')
-      // .options({           // 如果没有options这个选项将会报错 No PostCSS Config found
-      //         plugins: (loader) => [
-      //             require('postcss-import')({root: loader.resourcePath}),
-      //             require('autoprefixer')(), //CSS浏览器兼容
-      //             require('cssnano')()  //压缩css
-      //         ]
-      //     }
-      // )
-      // .end()
-    // .rule('less')
-      // .test(/\.less$/)
-      // .use('less-loader')
-      // .loader('less-loader')
-      // .end()
+        .loader('css-loader')
+        .options({})
+        .end()
+      .use('postcss-loader')
+        .loader('postcss-loader')
+        .options({
+          plugins: function() {
+            return [
+              require('autoprefixer')({
+                overrideBrowserslist: ['>0.25%', 'not dead']
+              })
+            ]
+          }
+        })
+        .end()
+      .use('less-loader')
+        .loader('less-loader')
+        .end()
+      .use('postcss')
+        .loader('postcss-loader')
+        .options({
+          plugins: loader => [
+            require("stylelint")({
+              /* your options */
+            }),
+            require("postcss-reporter")({ clearReportedMessages: true })          
+          ]
+        })
+      
 
 
 config.plugin('html').use(htmlPlugin,[{}])
