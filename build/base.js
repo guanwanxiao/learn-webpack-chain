@@ -4,12 +4,12 @@ const resolve = file => path.resolve(__dirname, file);
 const config = new Config()
 const htmlPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 config.mode(process.env.NODE_ENV)
 // 修改 entry 配置
 config.entry('index')
-      .add(resolve('../src/a.ts'))
+      .add(resolve('../test/index.ts'))
       .end()
       // 修改 output 配置
       .output
@@ -33,23 +33,25 @@ config.module
 config.module
       .rule('ts-loader')
         .test(/\.tsx?$/)
-          // .use('babel-loader')
-          //   .loader('babel-loader')
-          //   .options({
-          //     presets: ['@babel/preset-env'],
-          //     plugins: [
-          //       [
-          //         '@babel/plugin-transform-runtime',
-          //         {
-          //           corejs: 3
-          //         }
-          //       ]
-          //     ]
-          //   })
-          //   .end()
+          .use('babel-loader')
+            .loader('babel-loader')
+            .options({
+              presets: ['@babel/preset-env'],
+              // plugins: [
+              //   [
+              //     '@babel/plugin-transform-runtime',
+              //     {
+              //       corejs: 3
+              //     }
+              //   ]
+              // ]
+            })
+            .end()
           .use('ts-loader')
             .loader('ts-loader')
             .options({
+              // disable type checker - we will use it in fork plugin
+              transpileOnly:true
               // appendTsSuffixTo: [/\.vue$/]
             })
             .end()
@@ -60,7 +62,7 @@ config.plugin('html').use(htmlPlugin,[{
 }])
 
 config.plugin('MiniCssExtractPlugin').use(MiniCssExtractPlugin)
-
+config.plugin('ForkTsCheckerWebpackPlugin').use(ForkTsCheckerWebpackPlugin)
 
 
 module.exports = config

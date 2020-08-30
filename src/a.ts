@@ -1,5 +1,5 @@
 // require('./style/index.css')
-const a:number = '这里是 index.ts'
+const a:string = '这里是 index.ts'
 const obj = {
   name:'dd',
   age:12
