@@ -1,5 +1,6 @@
 // require('./style/index.css')
-const a:number = '这里是 index.ts'
+import { Button } from 'element-ui';
+const a:string = '这里是 index.ts'
 const obj = {
   name:'dd',
   age:12
@@ -10,4 +11,4 @@ h2.innerText = 'test';
 document.body.append(h2);
 console.log(a)
 const { age } = obj
-console.log('age',age)
+console.log('age',age,Button)
