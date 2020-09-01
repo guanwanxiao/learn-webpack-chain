@@ -2,12 +2,10 @@ const Config = require('webpack-chain')
 const path = require('path')
 const resolve = file => path.resolve(__dirname, file);
 const config = new Config()
-const htmlPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 
 
-config.mode(process.env.NODE_ENV)
+config.mode('production')
 // 修改 entry 配置
 config.entry('index')
       .add(resolve('../src/index.js'))
@@ -16,56 +14,48 @@ config.entry('index')
       .output
         .path(resolve('../dist'))
         .filename('[name].bundle.js');
-config.resolve.extensions.merge(['.ts','.js', '.jsx', '.vue', '.json'])
 config.module
-    .rule('extract-css-loader')
-      .test(/\.(le|c)ss$/)
-      .use('extract-css-loader')
-      .loader(require('mini-css-extract-plugin').loader)
-      .options({
-        publicPath: './'
-      })
-      .end()
-    .rule('css-loader')
-      .use('css-loader')
-      .loader('css-loader')
-      .options({});
-
-// config.module
-//       .rule('ts-loader')
-//         .test(/\.js?$/)
-          // .use('babel-loader')
-          //   .loader('babel-loader')
-          //   .options({
-          //     presets: ['@babel/preset-env'],
-          //     // plugins: [
-          //     //   [
-          //     //     '@babel/plugin-transform-runtime',
-          //     //     {
-          //     //       corejs: 3
-          //     //     }
-          //     //   ]
-          //     // ]
-          //   })
-          //   .end()
-          // .use('ts-loader')
-          //   .loader('ts-loader')
-          //   .options({
-          //     // appendTsSuffixTo: [/\.vue$/]
-          //   })
-          //   .end()
+      .rule('babel-loader')
+      .test(/\.js$/)
+        .use('babel-loader')
+          .loader('babel-loader')
+config.module
+      .rule('css-loader')
+      .test(/\.css$/)
+        .use('style-loader')
+          .loader('style-loader')
+          .end()
+        .use('css-loader')
+          .loader('css-loader')
+          .end()
+        .use('postcss-loader')
+          .loader('postcss-loader')
+          .options({
+            plugins: function() {
+              // 可以添加多个插件
+              return [
+                require('autoprefixer')({
+                  overrideBrowserslist: ['>0.25%', 'not dead']
+                })
+              ]
+            }
+          })
+config.module
+        .rule('url-loader')
+        .test(/\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/)
+        .use('url-loader')
+        .loader('url-loader')
+        .options({
+          limit:10000
+        })
 config.module
         .rule('vue-loader')
             .test(/\.vue$/)
             .use('vue-loader')
             .loader('vue-loader')
             .end()
-config.plugin('html').use(htmlPlugin,[{
-  title:'标题党',
-  template: resolve('../public/index.html')
-}])
 
-config.plugin('MiniCssExtractPlugin').use(MiniCssExtractPlugin)
+
 config.plugin('VueLoaderPlugin').use(VueLoaderPlugin)
 config.plugin('webpack-bundle-analyzer')
         .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)

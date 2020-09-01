@@ -1,2 +1,4 @@
 import { Button } from 'element-ui';
-console.log('Button',Button)
+// import Button from 'element-ui/lib/button'
+import vue from 'vue'
+vue.use(Button)
