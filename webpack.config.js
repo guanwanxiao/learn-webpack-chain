@@ -12,7 +12,7 @@ config.entry('index')
       .end()
       // 修改 output 配置
       .output
-        .path(resolve('../dist'))
+        .path(path.resolve(__dirname,'./dist'))
         .filename('[name].bundle.js');
 config.module
       .rule('babel-loader')
