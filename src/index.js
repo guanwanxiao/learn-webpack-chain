@@ -1,9 +1,6 @@
 import { Button } from 'element-ui';
-console.log('Button', Button)
- // [
-    //   "component",
-    //   {
-    //     "libraryName": "element-ui",
-    //     "styleLibraryName": "theme-chalk"
-    //   }
-    // ]
+import Vue from 'vue'
+import './a.js'
+import { cube } from './treeShaking'
+console.log('Button', Button,cube)
+Vue.use(Button)

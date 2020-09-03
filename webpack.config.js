@@ -4,7 +4,7 @@ const resolve = file => path.resolve(__dirname, file);
 const config = new Config()
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack')
-
+const CopyPlugin = require('./plugin/myCopy')
 config.mode('production')
 // 修改 entry 配置
 config.entry('index')
@@ -13,7 +13,7 @@ config.entry('index')
       // 修改 output 配置
       .output
         .path(path.resolve(__dirname,'./dist'))
-        .filename('[name].bundle.js');
+        .filename('[name].[hash].js');
 config.module
       .rule('babel-loader')
       .test(/\.js$/)
@@ -49,13 +49,6 @@ config.module
           limit:10000
         })
 config.module
-        .rule('vue-loader')
-            .test(/\.vue$/)
-            .use('vue-loader')
-            .loader('vue-loader')
-            .end()
-
-config.module
         .rule('url-loader')
         .test(/\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/)
         .use('url-loader')
@@ -70,16 +63,48 @@ config.module
             .loader('vue-loader')
             .end()
 config.plugin('VueLoaderPlugin').use(VueLoaderPlugin)
-config.plugin('webpack-bundle-analyzer')
-        .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+config.plugin('namedChunksPlugin').use(webpack.NamedChunksPlugin)
 
-  webpack(config.toConfig(),(err,stats) => {
-    console.log(config.toString())
-    if (stats.hasErrors()) {
-      // 返回描述编译信息 ，查看错误信息
-      console.log(stats.toString())
-      process.exit(1)
-    }
-  
-    console.log('build完成\n')
+config.plugin('CopyPlugin').use(CopyPlugin,[{ from:'dist',to:'dist2' }])
+// config.plugin('webpack-bundle-analyzer')
+//         .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+
+config.optimization.splitChunks({
+          chunks: "all",
+          cacheGroups: {
+            vendors: {
+              name: `chunk-vendors`,
+              test: /[\\/]node_modules[\\/]/,
+              priority: 10,
+              chunks: "initial",
+              // reuseExistingChunk: true
+            },
+            // common: {
+            //   name: `chunk-common`,
+            //   test: require.resolve('./src/treeShaking.js'),
+            //   minChunks: 2,
+            //   priority: 5,
+            //   reuseExistingChunk: true
+            // }
+          }
+        });
+
+config.optimization.runtimeChunk(true)
+// console.log('config.optimization',config.optimization)
+webpack(config.toConfig(),(err,stats) => {
+  // console.log(config.toString())
+  if (stats.hasErrors()) {
+    // 返回描述编译信息 ，查看错误信息
+    process.exit(1)
+  }
+  const output = stats.toString({
+    colors: true,
+    modules: false,
+    children: false,
+    chunks: false,
+    chunkModules: false 
   })
+  process.stdout.write(output)
+
+  console.log('build完成\n')
+})
